@@ -1,3 +1,6 @@
+{% extends'base.html' %} {% block title %} URL Shorter {% endblock %} 
+{% block main %}
+
 <h1>home page</h1>
 <h2>{{ variable }}</h2>
 
@@ -10,3 +13,26 @@
     <br />
     <input type="submit" value="Shortern" />
 </form>
+
+<form action="your-url" method="post" enctype="multipart/form-data">
+    <label for="file">File</label>
+    <input type="file" name="file" value="" required />
+    <br />
+    <label for="code">Short name</label>
+    <input type="text" name="code" value="" required />
+    <br />
+    <input type="submit" value="Shortern" />
+</form>
+
+{% if codes %}
+<h2>Code List:</h2>
+<ul>
+    {% for code in codes %}
+    <a href="{{ url_for('redirect_to_url', code=code) }}">
+        <li>{{ code }}</li>
+    </a>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}
