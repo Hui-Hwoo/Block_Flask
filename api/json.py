@@ -6,7 +6,7 @@
 import json
 import os.path
 
-from flask import Flask, jsonify, request
+from flask import jsonify, request
 
 JSON_DATABASE_PATH = "./database/json/db.json"
 
@@ -93,6 +93,7 @@ def delete_item():
         json.dump(data, file)
         
     return jsonify(data)
+
 
 # Check if one file exists, else create it
 def check_file(path=JSON_DATABASE_PATH):

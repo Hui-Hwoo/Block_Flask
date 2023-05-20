@@ -5,7 +5,8 @@ from flask import (Flask, abort, flash, jsonify, redirect, render_template,
                    request, session, url_for)
 from werkzeug.utils import secure_filename
 
-from api.json_file import *
+from api.json import *
+from api.mongodb import get_database
 
 app = Flask(__name__)
 app.secret_key = "secret_key"
@@ -18,7 +19,9 @@ app.secret_key = "secret_key"
 @app.route("/test", methods=['GET', 'POST', 'PUT', 'DELETE'])
 def test():
     if request.method == 'GET':
-        return get_item()
+        dbname = get_database()
+        print(dbname)
+        return {}
     elif request.method == 'POST':
         return add_item()
     elif request.method == 'PUT':
