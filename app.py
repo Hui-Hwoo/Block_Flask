@@ -5,8 +5,29 @@ from flask import (Flask, abort, flash, jsonify, redirect, render_template,
                    request, session, url_for)
 from werkzeug.utils import secure_filename
 
+from api.json_file import *
+
 app = Flask(__name__)
 app.secret_key = "secret_key"
+
+
+# ------------------------------- #
+# 
+# ------------------------------- #
+
+@app.route("/test", methods=['GET', 'POST', 'PUT', 'DELETE'])
+def test():
+    if request.method == 'GET':
+        return get_item()
+    elif request.method == 'POST':
+        return add_item()
+    elif request.method == 'PUT':
+        return update_item()
+    elif request.method == 'DELETE':
+        return delete_item()
+    else:
+        return jsonify({})
+
 
 @app.route("/")
 def home():
