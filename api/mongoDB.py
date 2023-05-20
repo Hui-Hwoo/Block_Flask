@@ -1,6 +1,6 @@
 # ------------------------------- #
 #            Rest API             #
-#     with MongoDB as databse     #
+#     with MongoDB as database    #
 # ------------------------------- #
 from pymongo import MongoClient
 

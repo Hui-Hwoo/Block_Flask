@@ -1,6 +1,6 @@
 # ------------------------------- #
 #            Rest API             #
-#    with JSON file as databse    #
+#    with JSON file as database   #
 # ------------------------------- #
 
 import json
