@@ -100,7 +100,7 @@ def create_database(cursor):
 
 config = {
     "user": "root",
-    "password": "SQL123456",
+    "password": "",
     "host": "127.0.0.1",
     "database": "block_flask",
     "raise_on_warnings": True,
@@ -149,7 +149,7 @@ import pymysql.cursors
 connection = pymysql.connect(
     host="localhost",
     user="root",
-    password="SQL123456",
+    password="",
     database="block_flask",
     charset="utf8mb4",
     cursorclass=pymysql.cursors.DictCursor,
