@@ -7,7 +7,7 @@ import os
 from pymongo import MongoClient
 
 
-# Get MongoDB Database
+# Connect MongoDB Database
 def get_database():
     # Configure
     user_name = os.getenv("MONGODB_USER_NAME")
