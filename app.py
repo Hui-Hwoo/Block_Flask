@@ -1,32 +1,35 @@
 import json
 import os.path
 
-from flask import (Flask, abort, flash, jsonify, redirect, render_template,
-                   request, session, url_for)
+from dotenv import load_dotenv
+from flask import Flask, abort, flash, jsonify, redirect, render_template, request, session, url_for
 from werkzeug.utils import secure_filename
 
 from api.json import *
+from api.mongodb import add_items as ad
 from api.mongodb import get_database
+
+# ------------------------------- #
+#            Flask App            #
+# ------------------------------- #
+
+load_dotenv()  # loads variables from .env file into environment
 
 app = Flask(__name__)
 app.secret_key = "secret_key"
 
+mongodb = get_database()
 
-# ------------------------------- #
-# 
-# ------------------------------- #
 
-@app.route("/test", methods=['GET', 'POST', 'PUT', 'DELETE'])
+@app.route("/test", methods=["GET", "POST", "PUT", "DELETE"])
 def test():
-    if request.method == 'GET':
-        dbname = get_database()
-        print(dbname)
-        return {}
-    elif request.method == 'POST':
+    if request.method == "GET":
+        return jsonify(ad(mongodb))
+    elif request.method == "POST":
         return add_item()
-    elif request.method == 'PUT':
+    elif request.method == "PUT":
         return update_item()
-    elif request.method == 'DELETE':
+    elif request.method == "DELETE":
         return delete_item()
     else:
         return jsonify({})
@@ -36,29 +39,30 @@ def test():
 def home():
     return render_template("home.html", codes=session.keys())
 
-@app.route("/your-url", methods=['GET', 'POST'])
+
+@app.route("/your-url", methods=["GET", "POST"])
 def your_url():
-    if request.method == 'POST':
+    if request.method == "POST":
         urls = {}
         if os.path.exists("urls.json"):
-            with open("urls.json", 'r') as r_file:
+            with open("urls.json", "r") as r_file:
                 urls = json.load(r_file)
-            
+
             if request.form["code"] in urls.keys():
                 flash("Duplicate!")
                 return redirect(url_for("home"))
         # print("\n" * 5, "Req", request.form, "\n" * 5)
-        
-        if 'url' in request.form.keys():
+
+        if "url" in request.form.keys():
             urls[request.form["code"]] = {"url": request.form["url"]}
         else:
-            f = request.files['file']
+            f = request.files["file"]
             full_name = request.form["code"] + secure_filename(f.filename)
             # print("\n" * 5, full_name, "\n" * 5)
             f.save("/Users/huihu/Documents/Block_Flask/static/user_files/" + full_name)
             urls[request.form["code"]] = {"file": full_name}
 
-        with open("urls.json", 'w') as w_file:
+        with open("urls.json", "w") as w_file:
             json.dump(urls, w_file)
             session[request.form["code"]] = True
 
@@ -66,17 +70,18 @@ def your_url():
     else:
         return redirect(url_for("home"))
 
+
 @app.route("/<string:code>")
 def redirect_to_url(code):
     urls = {}
     if os.path.exists("urls.json"):
-        with open("urls.json", 'r') as r_file:
+        with open("urls.json", "r") as r_file:
             urls = json.load(r_file)
         if code in urls.keys():
             if "url" in urls[code].keys():
                 return redirect(urls[code]["url"])
             else:
-                return redirect(url_for('static', filename="user_files/" + urls[code]["file"]))
+                return redirect(url_for("static", filename="user_files/" + urls[code]["file"]))
         else:
             return abort(404)
 
@@ -85,6 +90,7 @@ def redirect_to_url(code):
         #     return redirect(url_for("home"))
     else:
         return abort(404)
+
 
 @app.errorhandler(404)
 def page_not_found(error):
@@ -95,3 +101,8 @@ def page_not_found(error):
 @app.route("/api")
 def session_api():
     return jsonify(list(session.keys()))
+
+
+if __name__ == "__main__":
+    print("here " * 5)
+    app()
